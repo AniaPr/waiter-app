@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 
-const Button = (props) => {
+const Button = ({ children, id }) => {
   return (
     <>
-      <Link to='/table/:id'>
+      <Link to={`/table/${id}`}>
         <button type='button' className='btn btn-primary'>
-          {props.children}
+          {children}
         </button>
       </Link>
     </>
