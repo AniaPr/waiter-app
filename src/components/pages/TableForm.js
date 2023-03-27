@@ -1,47 +1,51 @@
 import Button from '../common/Button';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { getTableById } from '../../redux/tableRedux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTableById, updateTableRequest } from '../../redux/tableRedux';
 import { Navigate } from 'react-router-dom';
 import { useState } from 'react';
 
 const TableForm = () => {
   const { tableId } = useParams();
   const table = useSelector((state) => getTableById(state, tableId));
+  const dispatch = useDispatch();
+  const allTables = useSelector((state) => state.tables);
 
-  const [status, setStatus] = useState(table.status);
-  const [peopleAmount, setPeopleAmount] = useState(table.peopleAmount);
-  const [maxPeopleAmount, setMaxPeopleAmount] = useState(table.maxPeopleAmount);
-  const [bill, setBill] = useState(table.bill);
-
-  useEffect(() => {
-    if (status === 'Busy') setBill(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bill]);
+  const [status, setStatus] = useState(table?.status ?? '');
+  const [peopleAmount, setPeopleAmount] = useState(table?.peopleAmount ?? 0);
+  const [maxPeopleAmount, setMaxPeopleAmount] = useState(
+    table?.maxPeopleAmount ?? 0
+  );
+  const [bill, setBill] = useState(table?.bill ?? 0);
 
   useEffect(() => {
     if (status === 'Cleaning' || status === 'Free') setPeopleAmount(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    else if (status === 'Busy') setBill(0);
   }, [status]);
 
-  const amount = (e) => {
-    if (e.target.value >= 0 && e.target.value <= 10) {
-      setPeopleAmount(e.target.value);
-    } else if (peopleAmount > maxPeopleAmount) {
-      setPeopleAmount(maxPeopleAmount);
-    }
+  useEffect(() => {
+    if (peopleAmount > maxPeopleAmount) setPeopleAmount(maxPeopleAmount);
+  }, [peopleAmount, maxPeopleAmount]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(
+      updateTableRequest({
+        tableId,
+        status,
+        peopleAmount,
+        maxPeopleAmount,
+        bill,
+      })
+    );
   };
 
-  const maxAmount = (e) => {
-    if (e.target.value >= 0 && e.target.value <= 10)
-      setMaxPeopleAmount(e.target.value);
-  };
-
-  if (!table) return <Navigate to='/' />;
+  if (!allTables.length) return <div>Loading</div>;
+  if (!table && allTables.length) return <Navigate to='/' />;
 
   return (
-    <form className='row d-flex flex-column'>
+    <form className='row d-flex flex-column' onSubmit={handleSubmit}>
       <h2>Table {table.id}</h2>
       <div className='col-4 d-inline-flex'>
         <label className='form-label m-auto'>
@@ -62,17 +66,21 @@ const TableForm = () => {
           <h5>People: </h5>
         </label>
         <input
-          type='text'
+          type='number'
           className='form-control m-2'
+          min='0'
+          max={maxPeopleAmount}
           value={peopleAmount}
-          onChange={amount}
+          onChange={(e) => setPeopleAmount(e.target.value)}
         />
         <span className='m-auto'>/</span>
         <input
-          type='text'
+          type='number'
           className='form-control m-2'
+          min='0'
+          max='10'
           value={maxPeopleAmount}
-          onChange={maxAmount}
+          onChange={(e) => setMaxPeopleAmount(e.target.value)}
         />
       </div>
       <div className='col-3 d-inline-flex'>
@@ -81,7 +89,7 @@ const TableForm = () => {
         </label>
         <span className='m-auto'>$</span>
         <input
-          type='text'
+          type='number'
           className='form-control m-2'
           value={bill}
           onChange={(e) => setBill(e.target.value)}
