@@ -1,16 +1,15 @@
-import Button from '../common/Button';
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTableById, updateTableRequest } from '../../redux/tableRedux';
-import { Navigate } from 'react-router-dom';
-import { useState } from 'react';
+import clsx from 'clsx';
 
 const TableForm = () => {
-  const { tableId } = useParams();
-  const table = useSelector((state) => getTableById(state, tableId));
+  const { id } = useParams();
+  const table = useSelector((state) => getTableById(state, id));
   const dispatch = useDispatch();
   const allTables = useSelector((state) => state.tables);
+  const navigate = useNavigate();
 
   const [status, setStatus] = useState(table?.status ?? '');
   const [peopleAmount, setPeopleAmount] = useState(table?.peopleAmount ?? 0);
@@ -32,21 +31,22 @@ const TableForm = () => {
     e.preventDefault();
     dispatch(
       updateTableRequest({
-        tableId,
+        id,
         status,
         peopleAmount,
         maxPeopleAmount,
         bill,
       })
     );
+    navigate('/');
   };
 
-  if (!allTables.length) return <div>Loading</div>;
+  if (!allTables.length) return <h2>Loading...</h2>;
   if (!table && allTables.length) return <Navigate to='/' />;
 
   return (
     <form className='row d-flex flex-column' onSubmit={handleSubmit}>
-      <h2>Table {table.id}</h2>
+      <h2 className='mt-2'>Table {table.id}</h2>
       <div className='col-4 d-inline-flex'>
         <label className='form-label m-auto'>
           <h5>Status: </h5>
@@ -83,7 +83,11 @@ const TableForm = () => {
           onChange={(e) => setMaxPeopleAmount(e.target.value)}
         />
       </div>
-      <div className='col-3 d-inline-flex'>
+      <div
+        className={clsx(
+          'col-3',
+          status !== 'Busy' ? 'visually-hidden' : 'd-inline-flex'
+        )}>
         <label className='form-label m-auto'>
           <h5 className='me-3'>Bill: </h5>
         </label>
@@ -95,7 +99,11 @@ const TableForm = () => {
           onChange={(e) => setBill(e.target.value)}
         />
       </div>
-      <Button>Update</Button>
+      <div>
+        <button className='btn btn-primary mt-2' type='sumbit'>
+          Update
+        </button>
+      </div>
     </form>
   );
 };

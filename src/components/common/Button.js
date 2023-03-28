@@ -4,7 +4,7 @@ const Button = ({ children, id }) => {
   return (
     <>
       <Link to={`/table/${id}`}>
-        <button type='button' className='btn btn-primary'>
+        <button className='btn btn-primary' type='button'>
           {children}
         </button>
       </Link>

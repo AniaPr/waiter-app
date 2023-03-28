@@ -1,9 +1,16 @@
 import Table from './Table';
 import { useSelector } from 'react-redux';
+import Spinner from 'react-bootstrap/Spinner';
 
 const TableList = () => {
   const tables = useSelector((state) => state.tables);
-  console.log(tables);
+
+  if (!tables)
+    return (
+      <Spinner animation='border' role='status'>
+        <span className='visually-hidden'>Loading...</span>
+      </Spinner>
+    );
   return (
     <>
       <h1 className='m-3'>All tables</h1>
