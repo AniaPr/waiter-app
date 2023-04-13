@@ -8,6 +8,7 @@ import TableForm from './components/features/TableForm';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { fetchTables } from './redux/tableRedux';
+import NewTable from './components/features/NewTable';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<TableList />} />
         <Route path='/table/:id' element={<TableForm />} />
+        <Route path='/table/addtable' element={<NewTable />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
       <Footer />

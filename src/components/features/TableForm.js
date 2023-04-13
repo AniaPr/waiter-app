@@ -7,6 +7,7 @@ import clsx from 'clsx';
 const TableForm = () => {
   const { id } = useParams();
   const table = useSelector((state) => getTableById(state, id));
+  console.log(table);
   const dispatch = useDispatch();
   const allTables = useSelector((state) => state.tables);
   const navigate = useNavigate();
