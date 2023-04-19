@@ -11,21 +11,23 @@ const Table = ({ id, status }) => {
   };
 
   return (
-    <li className='list-group-item d-flex justify-content-between'>
-      <div className='d-inline-flex'>
-        <h2 className='m-auto '>Table {id}</h2>
-        <p className='m-auto ps-3'>
+    <li className='list-group-item d-flex flex-column flex-sm-row justify-content-sm-between'>
+      <div className='d-sm-inline-flex'>
+        <h2 className='my-sm-auto text-center'>Table {id}</h2>
+        <p className='my-sm-auto ms-sm-2 text-center'>
           <strong>Status:</strong> {status}
         </p>
       </div>
-      <div>
+      <div className='gap-1 col-6 mx-auto d-block d-sm-flex me-sm-0 flex-sm-row justify-content-sm-end text-center'>
         <Link to={`/table/${id}`}>
-          <button className='btn btn-primary me-2' type='button'>
+          <button
+            className='btn btn-primary d-block btn-sm mx-auto mb-1 mb-sm-0 h-100'
+            type='button'>
             Show more
           </button>
         </Link>
         <button
-          className='btn btn-primary'
+          className='btn btn-primary btn-sm d-block mx-auto m-sm-0'
           type='button'
           onClick={clickHandler}>
           Remove table

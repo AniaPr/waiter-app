@@ -32,9 +32,9 @@ export const updateTableRequest = (newTable) => {
       },
       body: JSON.stringify(newTable),
     };
-    fetch(`${API_URL}/tables/${newTable.id}`, options).then(() =>
-      dispatch(updateTable(newTable))
-    );
+    fetch(`${API_URL}/tables/${newTable.id}`, options)
+      .then((res) => res.json())
+      .then(() => dispatch(updateTable(newTable)));
   };
 };
 
@@ -43,6 +43,7 @@ export const removeTableRequest = (id) => {
   return (dispatch) => {
     fetch(`${API_URL}/tables/${id}`, { method: 'DELETE' })
       .then((res) => res.json())
+      .then(console.log('deleted!'))
       .then(() => dispatch(removeTable(id)))
       .catch((error) => console.error(error));
   };
@@ -64,7 +65,7 @@ export const addTableRequest = (id) => {
         bill: 0,
       }),
     };
-    fetch(`${API_URL}/tables/`, options)
+    fetch(`${API_URL}/tables`, options)
       .then((res) => res.json())
       .then(() => dispatch(addTable(id)))
       .catch((error) => console.error(error));

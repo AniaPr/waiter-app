@@ -1,10 +1,8 @@
 const Footer = () => {
   return (
     <div>
-      <footer className='py-3 my-4'>
-        <p className='text-center text-muted fixed-bottom'>
-          Copyright © PizzeriaApp 2023
-        </p>
+      <footer className='fixed-bottom bg-light text-center text-muted py-3'>
+        <p className='mb-0'>Copyright © AniaP 2023</p>
       </footer>
     </div>
   );
